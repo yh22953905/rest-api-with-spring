@@ -1,12 +1,12 @@
 package me.kimyounghan.restapiwithspring.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -20,7 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest // MockMvc 빈을 자동 설정 해준다. 웹 관련 빈만 등록해준다.
+//@WebMvcTest // AutoConfigureMockMvc 어노테이션이 있어 MockMvc 빈을 자동 설정 해준다. 웹 관련 빈만 등록해준다.
+@SpringBootTest
+@AutoConfigureMockMvc
 public class EventControllerTests {
 
     @Autowired
@@ -31,13 +33,14 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
-    // WebMvcTest 어노테이션으로 인해 웹 관련 빈만 등록되기 때문에 MockBean으로 리퍼지토리 주
-    @MockBean
-    EventRepository eventRepository;
+    // WebMvcTest 어노테이션으로 인해 웹 관련 빈만 등록되기 때문에 MockBean으로 리퍼지토리 주입
+//    @MockBean
+//    EventRepository eventRepository;
 
     @Test
     public void createEvent() throws Exception {
         Event event = Event.builder()
+                .id(100)
                 .name("Spring")
                 .description("REST API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2020, 12, 8, 0, 0))
@@ -48,9 +51,11 @@ public class EventControllerTests {
                 .maxPrice(200)
                 .limitOfEnrollment(100)
                 .location("강남역")
+                .free(true)
+                .offline(false)
+                .eventStatus(EventStatus.PUBLISHED)
                 .build();
-        event.setId(10);
-        Mockito.when(eventRepository.save(event)).thenReturn(event);
+//        Mockito.when(eventRepository.save(event)).thenReturn(event); // EventDto로 파라미터를 받으면 Mock 객체에서 save 할 때 쓰는 event 객체가 위에서 build 한 객체와 다르므로 NullPointerException 발
 
         mockMvc.perform(post("/api/events/")
 //                .contentType(MediaType.APPLICATION_JSON_UTF8) // deprecated
@@ -65,7 +70,11 @@ public class EventControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE));
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("id").value(Matchers.not(100)))
+                .andExpect(jsonPath("free").value(Matchers.not(true)))
+//                .andExpect(jsonPath("offline").value(Matchers.not(false)))
+                .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
         ;
     }
 

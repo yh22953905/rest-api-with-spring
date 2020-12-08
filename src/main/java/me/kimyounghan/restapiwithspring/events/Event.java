@@ -13,12 +13,13 @@ public class Event {
 
     @Id @GeneratedValue
     private Integer id;
-    private String name; private String description;
+    private String name;
+    private String description;
     private LocalDateTime beginEnrollmentDateTime;
     private LocalDateTime closeEnrollmentDateTime;
     private LocalDateTime beginEventDateTime;
     private LocalDateTime endEventDateTime;
-    private String location; // (optional)
+    private String location; // (optional) 이 값이 없으면 온라인 모
     private int basePrice; // (optional)
     private int maxPrice; // (optional)
     private int limitOfEnrollment;
