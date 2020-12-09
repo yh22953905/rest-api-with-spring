@@ -1,17 +1,18 @@
 package me.kimyounghan.restapiwithspring.events;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+// JUnit5로 변경
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class) JUnit5로 변경
 //@WebMvcTest // AutoConfigureMockMvc 어노테이션이 있어 MockMvc 빈을 자동 설정 해준다. 웹 관련 빈만 등록해준다.
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +40,8 @@ public class EventControllerTests {
 //    EventRepository eventRepository;
 
     @Test
+//    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
+    @DisplayName("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -71,6 +74,8 @@ public class EventControllerTests {
     }
 
     @Test
+//    @TestDescription("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -105,6 +110,8 @@ public class EventControllerTests {
     }
 
     @Test
+//    @TestDescription("입력값이 비어있는 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력값이 비어있는 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = new EventDto().builder().build();
 
@@ -116,6 +123,8 @@ public class EventControllerTests {
     }
 
     @Test
+//    @TestDescription("입력값이 잘못 경우에 에러가 발생하는 테스트")
+    @DisplayName("입력값이 잘못 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         // TODO
         EventDto eventDto = EventDto.builder()
