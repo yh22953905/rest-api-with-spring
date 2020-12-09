@@ -119,6 +119,7 @@ public class EventControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(eventDto))
         )
+                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
@@ -126,7 +127,6 @@ public class EventControllerTests {
 //    @TestDescription("입력값이 잘못 경우에 에러가 발생하는 테스트")
     @DisplayName("입력값이 잘못 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
-        // TODO
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development with Spring")
@@ -135,7 +135,7 @@ public class EventControllerTests {
                 .beginEventDateTime(LocalDateTime.of(2020, 12, 24, 0, 0))
                 .endEventDateTime(LocalDateTime.of(2020, 12, 23, 0, 0))
                 .basePrice(100)
-                .maxPrice(200)
+                .maxPrice(50)
                 .limitOfEnrollment(100)
                 .location("강남역")
                 .build();
@@ -144,7 +144,14 @@ public class EventControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(eventDto))
         )
-                .andExpect(status().isBadRequest());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0].objectName").exists())
+                .andExpect(jsonPath("$[0].field").exists())
+                .andExpect(jsonPath("$[0].defaultMessage").exists())
+                .andExpect(jsonPath("$[0].code").exists())
+                .andExpect(jsonPath("$[0].rejectedValue").exists())
+        ;
     }
 
 }

@@ -33,13 +33,15 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+//            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
         }
 
         eventValidator.validate(eventDto, errors);
 
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().build();
+//            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
