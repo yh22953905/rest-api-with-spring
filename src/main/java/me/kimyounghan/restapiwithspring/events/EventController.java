@@ -1,5 +1,6 @@
 package me.kimyounghan.restapiwithspring.events;
 
+import me.kimyounghan.restapiwithspring.common.ErrorResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -37,14 +38,15 @@ public class EventController {
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
 //            return ResponseEntity.badRequest().build();
-            return ResponseEntity.badRequest().body(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
+//            return ResponseEntity.badRequest().body(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
+            return badRequest(errors);
         }
 
         eventValidator.validate(eventDto, errors);
 
         if (errors.hasErrors()) {
 //            return ResponseEntity.badRequest().build();
-            return ResponseEntity.badRequest().body(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
+            return badRequest(errors); // Errors 는 자바빈 스펙을 따르지 않기 때문에 body 메소드의 파라미터가 될 수 없음(JSON 으로 serialize 할 수 없음)
         }
 
         Event event = modelMapper.map(eventDto, Event.class);
@@ -58,6 +60,11 @@ public class EventController {
         eventResource.add(selfLinkBuilder.withRel("update-event"));
         eventResource.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
         return ResponseEntity.created(createdUri).body(eventResource) ;
+    }
+
+    private ResponseEntity<EntityModel<Errors>> badRequest(Errors errors) {
+        return ResponseEntity.badRequest()
+                .body(ErrorResource.modelOf(errors));
     }
 
 }
