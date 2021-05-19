@@ -13,8 +13,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 @Configuration
 @EnableWebSecurity
@@ -25,11 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 이 추상
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Bean
-    public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
-    }
 
     @Bean // AuthenticationManager 를 Bean 으로 노출시킴.
     @Override
@@ -56,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 이 추상
             .formLogin() // 스프링 디폴트 폼 로그인 페이지 사용
                 .and()
             .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET, "/api/**").anonymous()
+                .mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
                 .anyRequest().authenticated();
     }
 }
