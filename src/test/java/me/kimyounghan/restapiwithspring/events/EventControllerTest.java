@@ -1,9 +1,11 @@
 package me.kimyounghan.restapiwithspring.events;
 
 import me.kimyounghan.restapiwithspring.accounts.Account;
+import me.kimyounghan.restapiwithspring.accounts.AccountRepository;
 import me.kimyounghan.restapiwithspring.accounts.AccountRole;
 import me.kimyounghan.restapiwithspring.accounts.AccountService;
 import me.kimyounghan.restapiwithspring.common.CommonControllerTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
@@ -38,6 +40,15 @@ public class EventControllerTest extends CommonControllerTest {
     @Autowired
     AccountService accountService;
 
+    @Autowired
+    AccountRepository accountRepository;
+
+    @Before
+    public void setUp() {
+        eventRepository.deleteAll();
+        accountRepository.deleteAll();
+    }
+
     @Test
 //    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
@@ -56,7 +67,7 @@ public class EventControllerTest extends CommonControllerTest {
 
         mockMvc.perform(
                 post("/api/events/")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(event))
@@ -129,6 +140,10 @@ public class EventControllerTest extends CommonControllerTest {
         ;
     }
 
+    private String getBearerToken() throws Exception {
+        return "Bearer " + getAccessToken();
+    }
+
     private String getAccessToken() throws Exception {
         String username = "younghan4@email.com";
         String password = "pass";
@@ -184,6 +199,7 @@ public class EventControllerTest extends CommonControllerTest {
 //                스프링 5.2 부터는 UTF-8 이 기본 Charset
 //                스프링 부트 2.2.0 업그레이드 후 응답 Content-Type 에서 Charset 빠짐
 //                출처 : http://honeymon.io/tech/2019/10/23/spring-deprecated-media-type.html
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(event))
@@ -199,6 +215,7 @@ public class EventControllerTest extends CommonControllerTest {
         EventDto eventDto = new EventDto().builder().build();
 
         this.mockMvc.perform(post("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(eventDto))
         )
@@ -223,6 +240,7 @@ public class EventControllerTest extends CommonControllerTest {
                 .build();
 
         this.mockMvc.perform(post("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(this.objectMapper.writeValueAsString(eventDto))
         )
@@ -292,6 +310,7 @@ public class EventControllerTest extends CommonControllerTest {
         // When & Then
         mockMvc.perform(
                 put("/api/events/{id}", event.getId())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventDto))
@@ -314,6 +333,7 @@ public class EventControllerTest extends CommonControllerTest {
         // When & Then
         mockMvc.perform(
                 put("/api/events/{id}", event.getId())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventDto))
@@ -335,6 +355,7 @@ public class EventControllerTest extends CommonControllerTest {
         // When & Then
         mockMvc.perform(
                 put("/api/events/{id}", event.getId())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventDto))
@@ -354,6 +375,7 @@ public class EventControllerTest extends CommonControllerTest {
         // When & Then
         mockMvc.perform(
                 put("/api/events/12345", event.getId())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventDto))
