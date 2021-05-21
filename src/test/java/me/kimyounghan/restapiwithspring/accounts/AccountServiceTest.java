@@ -39,7 +39,7 @@ public class AccountServiceTest {
     @Test
     public void findByUsername() {
         // Given
-        String username = "email@email.com";
+        String username = "younghan3@email.com";
         String password = "password";
 
         Account account = Account.builder()

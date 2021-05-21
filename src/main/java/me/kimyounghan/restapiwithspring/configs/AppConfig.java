@@ -37,8 +37,8 @@ public class AppConfig {
             @Override
             public void run(ApplicationArguments args) throws Exception {
                 Account account = Account.builder()
-                        .email("younghan@email.com")
-                        .password("younghan")
+                        .email("younghan1@email.com")
+                        .password("pass")
                         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                         .build();
 

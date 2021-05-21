@@ -2,6 +2,7 @@ package me.kimyounghan.restapiwithspring.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
+import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -9,9 +10,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-//@RunWith(SpringRunner.class) JUnit5로 변경
+@RunWith(SpringRunner.class) // JUnit4
 //@WebMvcTest // AutoConfigureMockMvc 어노테이션이 있어 MockMvc 빈을 자동 설정 해준다. 웹 관련 빈만 등록해준다.
 @SpringBootTest
 @AutoConfigureMockMvc
