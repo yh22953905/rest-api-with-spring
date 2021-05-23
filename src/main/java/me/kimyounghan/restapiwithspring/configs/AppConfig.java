@@ -3,6 +3,7 @@ package me.kimyounghan.restapiwithspring.configs;
 import me.kimyounghan.restapiwithspring.accounts.Account;
 import me.kimyounghan.restapiwithspring.accounts.AccountRole;
 import me.kimyounghan.restapiwithspring.accounts.AccountService;
+import me.kimyounghan.restapiwithspring.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -34,15 +35,26 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account account = Account.builder()
-                        .email("younghan1@email.com")
-                        .password("pass")
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                         .build();
 
-                accountService.saveAccount(account);
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
+                        .build();
+
+                accountService.saveAccount(user);
             }
         };
     }
