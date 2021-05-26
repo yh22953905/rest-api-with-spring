@@ -254,12 +254,13 @@ public class EventControllerTest extends CommonControllerTest {
     }
 
     @Test
-    public void queryEvents() throws Exception {
+    public void queryEventsWithAuthentication() throws Exception {
         // Given
         IntStream.range(0, 30).forEach(this::generateEvent);
 
         // When
         this.mockMvc.perform(get("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken())
                 .param("page", "1")
                 .param("size", "10")
                 .param("sort", "name,desc")
@@ -270,6 +271,7 @@ public class EventControllerTest extends CommonControllerTest {
                 .andExpect(jsonPath("_embedded.eventList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.create-event").exists())
                 .andDo(document("get-events"))
         ;
     }
