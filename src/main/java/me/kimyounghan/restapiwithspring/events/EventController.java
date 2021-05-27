@@ -1,5 +1,6 @@
 package me.kimyounghan.restapiwithspring.events;
 
+import me.kimyounghan.restapiwithspring.accounts.Account;
 import me.kimyounghan.restapiwithspring.common.ErrorResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -11,9 +12,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -75,14 +74,19 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity readEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User principal = (User) authentication.getPrincipal();
-
+    public ResponseEntity readEvents(
+            Pageable pageable
+            , PagedResourcesAssembler<Event> assembler
+            , @AuthenticationPrincipal(expression = "account") Account account
+    ) {
         Page<Event> page = eventRepository.findAll(pageable);
 
         PagedModel<EntityModel<Event>> pagedResource = assembler.toModel(page, EventResource::modelOf);
         pagedResource.add(Link.of("/docs/index.html#resources-events-get").withRel("profile"));
+
+        if (account != null) {
+            pagedResource.add(linkTo(EventController.class).withRel("create-event"));
+        }
 
         return ResponseEntity.ok(pagedResource);
     }
