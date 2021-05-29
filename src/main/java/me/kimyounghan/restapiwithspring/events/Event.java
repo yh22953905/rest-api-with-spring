@@ -1,7 +1,9 @@
 package me.kimyounghan.restapiwithspring.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import me.kimyounghan.restapiwithspring.accounts.Account;
+import me.kimyounghan.restapiwithspring.accounts.AccountSerializer;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class Event {
     private EventStatus eventStatus = EventStatus.DRAFT;
 
     @ManyToOne
+    @JsonSerialize(using = AccountSerializer.class)
     private Account user;
 
     public void update() {
