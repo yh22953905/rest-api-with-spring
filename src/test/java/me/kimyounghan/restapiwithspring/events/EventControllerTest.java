@@ -145,17 +145,15 @@ public class EventControllerTest extends CommonControllerTest {
     }
 
     private String getBearerToken() throws Exception {
-        return "Bearer " + getAccessToken();
+        return getBearerToken(true);
     }
 
-    private String getAccessToken() throws Exception {
-        Account account = Account.builder()
-                .email(appProperties.getUserUsername())
-                .password(appProperties.getUserPassword())
-                .roles(Set.of(AccountRole.USER))
-                .build();
+    private String getBearerToken(Boolean needToCreateAccount) throws Exception {
+        return "Bearer " + getAccessToken(needToCreateAccount);
+    }
 
-        accountService.saveAccount(account);
+    private String getAccessToken(Boolean needToCreateAccount) throws Exception {
+        if (needToCreateAccount) createAccount();
 
         ResultActions perform = mockMvc.perform(
                 post("/oauth/token")
@@ -169,6 +167,16 @@ public class EventControllerTest extends CommonControllerTest {
 
         Jackson2JsonParser parser = new Jackson2JsonParser();
         return parser.parseMap(responseBody).get("access_token").toString();
+    }
+
+    private Account createAccount() {
+        Account account = Account.builder()
+                .email(appProperties.getUserUsername())
+                .password(appProperties.getUserPassword())
+                .roles(Set.of(AccountRole.USER))
+                .build();
+
+        return accountService.saveAccount(account);
     }
 
     @Test
@@ -300,7 +308,8 @@ public class EventControllerTest extends CommonControllerTest {
     @Test
     public void getEvent() throws Exception {
         // Given
-        Event event = generateEvent(100);
+        Account account = createAccount();
+        Event event = generateEvent(100, account);
 
         // When & Then
         mockMvc.perform(get("/api/events/{id}", event.getId()))
@@ -323,7 +332,8 @@ public class EventControllerTest extends CommonControllerTest {
     @Test
     public void updateEvent() throws Exception {
         // Given
-        Event event = generateEvent(200);
+        Account account = createAccount();
+        Event event = generateEvent(200, account);
 
         EventDto eventDto = modelMapper.map(event, EventDto.class);
         eventDto.setName("Updated Event");
@@ -331,7 +341,7 @@ public class EventControllerTest extends CommonControllerTest {
         // When & Then
         mockMvc.perform(
                 put("/api/events/{id}", event.getId())
-                        .header(HttpHeaders.AUTHORIZATION, getBearerToken())
+                        .header(HttpHeaders.AUTHORIZATION, getBearerToken(false))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaTypes.HAL_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(eventDto))
@@ -406,24 +416,35 @@ public class EventControllerTest extends CommonControllerTest {
         ;
     }
 
-    private Event generateEvent(int index) {
-        Event event = Event.builder()
-                .name("event " + index)
-                .description("REST API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2020, 12, 8, 0, 0))
-                .closeEnrollmentDateTime(LocalDateTime.of(2020, 12, 9, 0, 0))
-                .beginEventDateTime(LocalDateTime.of(2020, 12, 10, 0, 0))
-                .endEventDateTime(LocalDateTime.of(2020, 12, 11, 0, 0))
-                .basePrice(100)
-                .maxPrice(200)
-                .limitOfEnrollment(100)
-                .location("강남역")
-                .free(false)
-                .offline(true)
-                .eventStatus(EventStatus.DRAFT)
-                .build();
+    private Event generateEvent(int index, Account account) {
+        Event event = buildEvent(index);
+        event.setUser(account);
 
         return eventRepository.save(event);
+    }
+
+    private Event generateEvent(int index) {
+        Event event = buildEvent(index);
+
+        return eventRepository.save(event);
+    }
+
+    private Event buildEvent(int index) {
+        return Event.builder()
+                    .name("event " + index)
+                    .description("REST API Development with Spring")
+                    .beginEnrollmentDateTime(LocalDateTime.of(2020, 12, 8, 0, 0))
+                    .closeEnrollmentDateTime(LocalDateTime.of(2020, 12, 9, 0, 0))
+                    .beginEventDateTime(LocalDateTime.of(2020, 12, 10, 0, 0))
+                    .endEventDateTime(LocalDateTime.of(2020, 12, 11, 0, 0))
+                    .basePrice(100)
+                    .maxPrice(200)
+                    .limitOfEnrollment(100)
+                    .location("강남역")
+                    .free(false)
+                    .offline(true)
+                    .eventStatus(EventStatus.DRAFT)
+                    .build();
     }
 
 }
