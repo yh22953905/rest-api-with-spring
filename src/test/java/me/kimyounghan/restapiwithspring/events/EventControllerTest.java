@@ -5,9 +5,9 @@ import me.kimyounghan.restapiwithspring.accounts.AccountRepository;
 import me.kimyounghan.restapiwithspring.accounts.AccountRole;
 import me.kimyounghan.restapiwithspring.accounts.AccountService;
 import me.kimyounghan.restapiwithspring.common.AppProperties;
-import me.kimyounghan.restapiwithspring.common.CommonControllerTest;
-import org.junit.Before;
-import org.junit.Test;
+import me.kimyounghan.restapiwithspring.common.CommonTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class EventControllerTest extends CommonControllerTest {
+public class EventControllerTest extends CommonTest {
 
     // WebMvcTest 어노테이션으로 인해 웹 관련 빈만 등록되기 때문에 MockBean으로 리퍼지토리 주입
 //    @MockBean
@@ -47,14 +47,14 @@ public class EventControllerTest extends CommonControllerTest {
     @Autowired
     AppProperties appProperties;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         eventRepository.deleteAll();
         accountRepository.deleteAll();
     }
 
     @Test
-//    @TestDescription("정상적으로 이벤트를 생성하는 테스트")
+//    @DisplayName("정상적으로 이벤트를 생성하는 테스트")
     public void createEvent() throws Exception {
         EventDto event = EventDto.builder()
                 .name("Spring")
@@ -180,7 +180,7 @@ public class EventControllerTest extends CommonControllerTest {
     }
 
     @Test
-//    @TestDescription("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
+//    @DisplayName("입력받을 수 없는 값을 사용한 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request() throws Exception {
         Event event = Event.builder()
                 .id(100)
@@ -216,7 +216,7 @@ public class EventControllerTest extends CommonControllerTest {
     }
 
     @Test
-//    @TestDescription("입력값이 비어있는 경우에 에러가 발생하는 테스트")
+//    @DisplayName("입력값이 비어있는 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Empty_Input() throws Exception {
         EventDto eventDto = new EventDto().builder().build();
 
@@ -230,7 +230,7 @@ public class EventControllerTest extends CommonControllerTest {
     }
 
     @Test
-//    @TestDescription("입력값이 잘못 경우에 에러가 발생하는 테스트")
+//    @DisplayName("입력값이 잘못 경우에 에러가 발생하는 테스트")
     public void createEvent_Bad_Request_Wrong_Input() throws Exception {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")

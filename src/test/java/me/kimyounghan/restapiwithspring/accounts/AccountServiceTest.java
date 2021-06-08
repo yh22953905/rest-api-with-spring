@@ -1,30 +1,23 @@
 package me.kimyounghan.restapiwithspring.accounts;
 
-import org.hamcrest.Matchers;
-import org.junit.Rule;
-import org.junit.Test;
+import me.kimyounghan.restapiwithspring.common.CommonTest;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
-public class AccountServiceTest {
+public class AccountServiceTest extends CommonTest {
 
-    @Rule
+//    @Rule // JUnit5 에서 사라짐
     public ExpectedException expectedException = ExpectedException.none();
 
     @Autowired
@@ -74,13 +67,15 @@ public class AccountServiceTest {
 
     @Test
     public void findByUsernameFail2() {
-        // Expected
-        String username = "notFoundUsername";
-        expectedException.expect(UsernameNotFoundException.class);
-        expectedException.expectMessage(Matchers.containsString(username));
+//        // Expected
+//        String username = "notFoundUsername";
+//        expectedException.expect(UsernameNotFoundException.class); // JUnit5 에서 사라짐
+//        expectedException.expectMessage(Matchers.containsString(username));
+//
+//        // When
+//        accountService.loadUserByUsername(username);
 
-        // When
-        accountService.loadUserByUsername(username);
+        assertThrows(UsernameNotFoundException.class, () -> accountService.loadUserByUsername("notFoundUsername"));
     }
 
 }

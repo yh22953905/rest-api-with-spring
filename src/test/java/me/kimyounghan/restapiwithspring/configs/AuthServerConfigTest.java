@@ -2,9 +2,9 @@ package me.kimyounghan.restapiwithspring.configs;
 
 import me.kimyounghan.restapiwithspring.accounts.AccountService;
 import me.kimyounghan.restapiwithspring.common.AppProperties;
-import me.kimyounghan.restapiwithspring.common.CommonControllerTest;
-import me.kimyounghan.restapiwithspring.common.TestDescription;
-import org.junit.Test;
+import me.kimyounghan.restapiwithspring.common.CommonTest;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-public class AuthServerConfigTest extends CommonControllerTest {
+public class AuthServerConfigTest extends CommonTest {
 
     @Autowired
     AccountService accountService;
@@ -21,7 +21,7 @@ public class AuthServerConfigTest extends CommonControllerTest {
     AppProperties appProperties;
 
     @Test
-    @TestDescription("인증 토큰을 발급받는 테스트")
+    @DisplayName("인증 토큰을 발급받는 테스트")
     public void getAuthToken() throws Exception {
         mockMvc.perform(
                 post("/oauth/token")

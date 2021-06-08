@@ -86,6 +86,7 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/pl.pragmatists/JUnitParams -->
+		<!--	JUnit5 부터는 제공되기 때문에 따로 의존성 주입 안해도 됨.	-->
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
